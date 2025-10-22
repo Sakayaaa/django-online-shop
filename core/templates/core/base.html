@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,19 +13,19 @@
   <div class="bg-white border-bottom py-2 small">
     <div class="container d-flex justify-content-between">
       <div>Free shipping over $100</div>
-      <div><a href="{% url 'accounts:login' %}">Login</a> • <a href="{% url 'accounts:register' %}">Register</a></div>
+      <div><a href="">Login</a> • <a href="">Register</a></div>
     </div>
   </div>
 
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
-      <a class="navbar-brand text-danger fw-bold" href="{% url 'core:home' %}">DigiStore</a>
+      <a class="navbar-brand text-danger fw-bold" href="">DigiStore</a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="{% url 'products:list' %}">Products</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'cart:cart' %}">Cart</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'orders:list' %}">Orders</a></li>
+          <li class="nav-item"><a class="nav-link" href="">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="">Cart</a></li>
+          <li class="nav-item"><a class="nav-link" href="">Orders</a></li>
         </ul>
       </div>
     </div>
