@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+{% block title %}Cart - DigiStore{% endblock %}
+{% block content %}
+<h3>Your Cart</h3>
+<div class="table-responsive">
+  <table class="table">
+    <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead>
+    <tbody>
+      {% for item in cart.items %}
+      <tr>
+        <td>{{ item.product.name }}</td>
+        <td>${{ item.product.price }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>${{ item.total_price }}</td>
+        <td><a href="{% url 'cart:remove' item.product.pk %}" class="text-danger">Remove</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="text-end">
+  <h5>Total: ${{ cart.total }}</h5>
+  <a href="{% url 'cart:checkout' %}" class="btn btn-danger">Checkout</a>
+</div>
+{% endblock %}

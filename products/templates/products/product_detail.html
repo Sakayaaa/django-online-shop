@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ product.name }} - DigiStore{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <img src="{{ product.image_url }}" class="img-fluid rounded" alt="{{ product.name }}">
+  </div>
+  <div class="col-md-6">
+    <h2>{{ product.name }}</h2>
+    <p class="text-danger fw-bold">${{ product.price }}</p>
+    <p class="small text-muted">Brand: {{ product.brand.name }}</p>
+    <p>{{ product.description }}</p>
+    <a href="{% url 'cart:add' product.pk %}" class="btn btn-danger">Add to Cart</a>
+  </div>
+</div>
+<hr>
+<h5>Reviews</h5>
+{% for r in product.reviews.all %}
+<div class="border p-3 mb-2">
+  <strong>{{ r.user.get_full_name }}</strong> <span class="small text-muted">- {{ r.rating }} / 5</span>
+  <p>{{ r.comment }}</p>
+</div>
+{% empty %}<p class="text-muted">No reviews yet</p>{% endfor %}
+{% endblock %}

@@ -1,0 +1,8 @@
+/* Red / White theme - desktop only */
+body { font-family: Inter, Arial, sans-serif; background: #fff; color: #222; }
+.navbar-brand { color: #c62828 !important; }
+.btn-danger { background-color: #c62828; border-color: #b71c1c; }
+.btn-danger:hover { background-color: #b71c1c; }
+.card { border: 1px solid #eee; }
+.small-muted { color: #6c757d; }
+footer { background: #fff; }

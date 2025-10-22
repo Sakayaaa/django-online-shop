@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}
+{% block title %}Profile - DigiStore{% endblock %}
+{% block content %}
+<h3>Profile</h3>
+<div class="card p-3" style="max-width:720px">
+  <form method="post">{% csrf_token %}
+    <div class="mb-3"><label class="form-label">Name</label><input class="form-control" name="name" value="{{ user.get_full_name }}"></div>
+    <div class="mb-3"><label class="form-label">Email</label><input class="form-control" name="email" value="{{ user.email }}"></div>
+    <button class="btn btn-danger">Update</button>
+  </form>
+</div>
+{% endblock %}

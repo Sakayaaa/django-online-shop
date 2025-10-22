@@ -1,0 +1,11 @@
+{% extends 'core/base.html' %}
+{% block title %}Contact - DigiStore{% endblock %}
+{% block content %}
+<h3>Contact Us</h3>
+<form method="post">{% csrf_token %}
+  <div class="mb-3"><label class="form-label">Name</label><input class="form-control" name="name"></div>
+  <div class="mb-3"><label class="form-label">Email</label><input class="form-control" name="email"></div>
+  <div class="mb-3"><label class="form-label">Message</label><textarea class="form-control" name="message"></textarea></div>
+  <button class="btn btn-danger">Send</button>
+</form>
+{% endblock %}

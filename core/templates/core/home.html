@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+{% block title %}Home - DigiStore{% endblock %}
+{% block content %}
+<section class="text-center py-5 bg-white rounded">
+  <h1 class="fw-bold text-danger">Welcome to DigiStore</h1>
+  <p class="lead text-muted">Minimal desktop store theme — red & white</p>
+  <a href="{% url 'products:list' %}" class="btn btn-danger btn-lg mt-3">Shop Now</a>
+</section>
+
+<section class="py-5">
+  <h3 class="mb-4">Featured Products</h3>
+  <div class="row g-4">
+    {% for i in 1|make_list:4 %}
+    <div class="col-md-3">
+      <div class="card">
+        <img src="{% static 'core/img/product'|add:forloop.counter|stringformat:'d'|add:'.svg' %}" class="card-img-top" alt="Product">
+        <div class="card-body">
+          <h6 class="card-title">Product {{ forloop.counter }}</h6>
+          <p class="text-danger fw-bold">$99.99</p>
+          <div class="d-grid gap-2">
+            <a href="{% url 'products:detail' pk=forloop.counter %}" class="btn btn-outline-danger btn-sm">View</a>
+            <a href="{% url 'cart:add' pk=forloop.counter %}" class="btn btn-danger btn-sm">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
