@@ -1,9 +1,27 @@
 {% extends 'core/base.html' %}
-{% block title %}Order #{{ order.pk }} - DigiStore{% endblock %}
+{% block title %}
+  Order #{{ order.pk }} - DigiStore
+{% endblock %}
 {% block content %}
-<h3>Order #{{ order.pk }}</h3>
-<p class="small text-muted">Status: {{ order.status }}</p>
-<table class="table"><thead><tr><th>Product</th><th>Qty</th><th>Price</th></tr></thead>
-<tbody>{% for it in order.items.all %}<tr><td>{{ it.product.name }}</td><td>{{ it.quantity }}</td><td>${{ it.price }}</td></tr>{% endfor %}</tbody></table>
-<p class="fw-bold">Total: ${{ order.total }}</p>
+  <h3>Order #{{ order.pk }}</h3>
+  <p class="small text-muted">Status: {{ order.status }}</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for it in order.items.all %}
+        <tr>
+          <td>{{ it.product.name }}</td>
+          <td>{{ it.quantity }}</td>
+          <td>${{ it.price }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="fw-bold">Total: ${{ order.total }}</p>
 {% endblock %}

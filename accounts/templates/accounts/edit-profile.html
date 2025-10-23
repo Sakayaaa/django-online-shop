@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+  <title>Edit Profile - DigiStore</title>
+{% endblock %}
+
+{% block content %}
+  <h1>Edit Profile</h1>
+  <form class="edit-profile-form" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" placeholder="JohnDoe" />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" placeholder="john@example.com" />
+
+    <label for="password">New Password</label>
+    <input type="password" id="password" name="password" placeholder="********" />
+
+    <label for="avatar">Profile Picture</label>
+    <input type="file" id="avatar" name="avatar" />
+
+    <button type="submit" class="btn-save">Save Changes</button>
+  </form>
+{% endblock %}
