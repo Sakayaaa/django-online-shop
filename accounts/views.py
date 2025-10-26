@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.views import View
+from .forms import RegisterForm
+from django.shortcuts import redirect
 
 
 class Login(View):
@@ -22,10 +24,14 @@ class Logout(View):
 
 class Register(View):
     def post(self, request):
-        pass
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
 
     def get(self, request):
-        return render(request, 'accounts/register.html', {})
+        form = RegisterForm()
+        return render(request, 'accounts/register.html', {'form':form})
 # -------------------------------------------------------------------------------------------------------
 
 

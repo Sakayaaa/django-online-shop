@@ -6,19 +6,22 @@
   <div class="card mx-auto" style="max-width:480px">
     <div class="card-body">
       <h4 class="card-title mb-3">Create an account</h4>
-      <form method="post">
+      <form method="post" action="">
         {% csrf_token %}
         <div class="mb-3">
-          <input class="form-control" name="name" placeholder="Full name" />
+          <input class="form-control" name="first_name" placeholder="First Name" autocomplete="new-firstname"/>
         </div>
         <div class="mb-3">
-          <input class="form-control" name="email" placeholder="Email" />
+          <input class="form-control" name="last_name" placeholder="Last Name" autocomplete="new-lastname"/>
         </div>
         <div class="mb-3">
-          <input class="form-control" name="password1" type="password" placeholder="Password" />
+          <input class="form-control" name="email" placeholder="Email" autocomplete="new-email"/>
         </div>
         <div class="mb-3">
-          <input class="form-control" name="password2" type="password" placeholder="Confirm password" />
+          <input class="form-control" name="password1" type="password" placeholder="Password" autocomplete="new-password"/>
+        </div>
+        <div class="mb-3">
+          <input class="form-control" name="password2" type="password" placeholder="Confirm password" autocomplete="new-password"/>
         </div>
         <button class="btn btn-danger w-100">Register</button>
       </form>
