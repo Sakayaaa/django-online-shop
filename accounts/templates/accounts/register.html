@@ -10,7 +10,7 @@
         {% csrf_token %}
 
         <div class="mb-3">
-          <input class="form-control" name="first_name" placeholder="First Name" autocomplete="new-firstname" />
+          <input class="form-control" name="first_name" placeholder="First Name" value="{{ form.first_name.value|default_if_none:'' }}" autocomplete="new-firstname" />
           {% if form.errors.first_name %}
             <div class="text-danger">
               {% for error in form.errors.first_name %}
@@ -21,7 +21,7 @@
         </div>
 
         <div class="mb-3">
-          <input class="form-control" name="last_name" placeholder="Last Name" autocomplete="new-lastname" />
+          <input class="form-control" name="last_name" placeholder="Last Name" value="{{ form.last_name.value|default_if_none:'' }}" autocomplete="new-lastname" />
           {% if form.errors.last_name %}
             <div class="text-danger">
               {% for error in form.errors.last_name %}
@@ -32,7 +32,7 @@
         </div>
 
         <div class="mb-3">
-          <input class="form-control" name="email" placeholder="Email" autocomplete="new-email" />
+          <input class="form-control" name="email" placeholder="Email" value="{{ form.email.value|default_if_none:'' }}" autocomplete="new-email" />
           {% if form.errors.email %}
             <div class="text-danger">
               {% for error in form.errors.email %}
