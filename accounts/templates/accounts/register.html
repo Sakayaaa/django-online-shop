@@ -8,21 +8,62 @@
       <h4 class="card-title mb-3">Create an account</h4>
       <form method="post" action="">
         {% csrf_token %}
+
         <div class="mb-3">
-          <input class="form-control" name="first_name" placeholder="First Name" autocomplete="new-firstname"/>
+          <input class="form-control" name="first_name" placeholder="First Name" autocomplete="new-firstname" />
+          {% if form.errors.first_name %}
+            <div class="text-danger">
+              {% for error in form.errors.first_name %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
+
         <div class="mb-3">
-          <input class="form-control" name="last_name" placeholder="Last Name" autocomplete="new-lastname"/>
+          <input class="form-control" name="last_name" placeholder="Last Name" autocomplete="new-lastname" />
+          {% if form.errors.last_name %}
+            <div class="text-danger">
+              {% for error in form.errors.last_name %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
+
         <div class="mb-3">
-          <input class="form-control" name="email" placeholder="Email" autocomplete="new-email"/>
+          <input class="form-control" name="email" placeholder="Email" autocomplete="new-email" />
+          {% if form.errors.email %}
+            <div class="text-danger">
+              {% for error in form.errors.email %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
+
         <div class="mb-3">
-          <input class="form-control" name="password1" type="password" placeholder="Password" autocomplete="new-password"/>
+          <input class="form-control" name="password1" type="password" placeholder="Password" autocomplete="new-password" />
+          {% if form.errors.password1 %}
+            <div class="text-danger">
+              {% for error in form.errors.password1 %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
+
         <div class="mb-3">
-          <input class="form-control" name="password2" type="password" placeholder="Confirm password" autocomplete="new-password"/>
+          <input class="form-control" name="password2" type="password" placeholder="Confirm password" autocomplete="new-password" />
+          {% if form.errors.password2 %}
+            <div class="text-danger">
+              {% for error in form.errors.password2 %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
+
         <button class="btn btn-danger w-100">Register</button>
       </form>
     </div>

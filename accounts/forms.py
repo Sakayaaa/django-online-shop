@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from .models import CustomUser
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 
@@ -6,7 +6,7 @@ class RegisterForm(UserCreationForm):
     email = forms.EmailField(label='Email', required=False)
     
     class Meta():
-        model = User
+        model = CustomUser
         fields = ['first_name','last_name', 'password1', 'password2', 'email']
         
         def save(self, commit=True):

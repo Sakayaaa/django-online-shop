@@ -2,11 +2,22 @@ from django.shortcuts import render
 from django.views import View
 from .forms import RegisterForm
 from django.shortcuts import redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 
 class Login(View):
     def post(self, request):
-        pass
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(request, email=email, password=password)
+        
+        if user:
+            login(request, user)
+            return redirect('profile')
+        else:
+            messages.error(request, 'The given email or password is incorrect!')
+            return redirect('login')
 
     def get(self, request):
         return render(request, 'accounts/login.html', {})
@@ -28,10 +39,11 @@ class Register(View):
         if form.is_valid():
             form.save()
             return redirect('login')
+        return render(request, 'accounts/register.html', {'form': form})
 
     def get(self, request):
         form = RegisterForm()
-        return render(request, 'accounts/register.html', {'form':form})
+        return render(request, 'accounts/register.html', {'form': form})
 # -------------------------------------------------------------------------------------------------------
 
 
