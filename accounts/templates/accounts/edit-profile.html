@@ -9,7 +9,7 @@
     <form method="post">
       {% csrf_token %}
 
-      <!-- Basic user info -->
+      <!-- User info -->
       <div class="mb-3">
         <label>First Name</label>
         <input type="text" name="first_name" class="form-control" value="{{ form.first_name.value }}" />
@@ -30,7 +30,7 @@
       <div id="address-container">
         {% for addr in addresses %}
           <div class="address-box mb-3 p-3" style="border:1px solid black; position: relative;">
-            <button type="button" class="btn btn-danger btn-sm remove-address" style="position:absolute; top:5px; right:5px;">🗑</button>
+            <button type="button" class="btn btn-danger remove-address" style="position:absolute; top:5px; right:5px; width:40px; height:40px; font-size:20px; padding:0;">🗑</button>
             <div class="mb-2">
               <label>City</label>
               <input type="text" name="city[]" class="form-control" value="{{ addr.city }}" />
@@ -66,12 +66,15 @@
       div.className = 'address-box mb-3 p-3'
       div.style = 'border:1px solid black; position: relative;'
       div.innerHTML = `
-          <button type="button" class="btn btn-danger btn-sm remove-address" style="position:absolute; top:5px; right:5px;">🗑</button>
+          <button type="button" class="btn btn-danger remove-address" 
+                  style="position:absolute; top:5px; right:5px; width:40px; height:40px; font-size:20px; padding:0;">🗑
+          </button>
           <div class="mb-2"><label>City</label><input type="text" name="city[]" class="form-control"></div>
           <div class="mb-2"><label>Street</label><input type="text" name="street[]" class="form-control"></div>
           <div class="mb-2"><label>House Number</label><input type="text" name="number[]" class="form-control"></div>
           <div class="mb-2"><label>Postal Code</label><input type="text" name="postal_code[]" class="form-control"></div>
         `
+      attachRemove(div)
       return div
     }
     
@@ -80,7 +83,6 @@
       if (current < 5) {
         const newBox = createAddressBox()
         container.appendChild(newBox)
-        attachRemove(newBox)
       } else {
         alert('You can add up to 5 addresses only.')
       }
@@ -88,12 +90,9 @@
     
     function attachRemove(box) {
       const btn = box.querySelector('.remove-address')
-      btn.addEventListener('click', () => {
-        box.remove()
-      })
+      btn.addEventListener('click', () => box.remove())
     }
     
-    // attach remove to existing boxes
     document.querySelectorAll('.address-box').forEach(attachRemove)
   </script>
 {% endblock %}

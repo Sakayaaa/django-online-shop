@@ -60,33 +60,40 @@ class ViewProfile(View):
 
 class EditProfile(View):
     def get(self, request):
-        user = request.user
-
-        if not user.is_authenticated:
+        if not request.user.is_authenticated:
             return redirect('login')
-
-        form = EditProfileForm(instance=user)
-        addresses = user.addresses.all()
-
-        return render(request, 'accounts/edit-profile.html', {'form': form, 'adresses': addresses})
+        form = EditProfileForm(instance=request.user)
+        addresses = request.user.addresses.all()
+        return render(request, 'accounts/edit-profile.html', {'form': form, 'addresses': addresses})
 
     def post(self, request):
-        user = request.user
-        form = EditProfileForm(request.POST, instance=user)
-        addresses = request.POST.getlist('addresses[]')
+        form = EditProfileForm(request.POST, instance=request.user)
+        addresses_data = list(zip(
+            request.POST.getlist('city[]'),
+            request.POST.getlist('street[]'),
+            request.POST.getlist('number[]'),
+            request.POST.getlist('postal_code[]')
+        ))
 
         if form.is_valid():
             form.save()
 
             request.user.addresses.all().delete()
-            for addr in addresses[:5]:
-                if addr.strip():
-                    Address.objects.create(user=user, address=addr.strip())
+            for data in addresses_data[:5]:
+                city, street, number, postal_code = [x.strip() for x in data]
+                if any([city, street, number, postal_code]):
+                    Address.objects.create(
+                        user=request.user,
+                        city=city,
+                        street=street,
+                        number=number,
+                        postal_code=postal_code
+                    )
 
-            messages.success(request, "Profile Updated Successfuly")
+            messages.success(request, "Profile updated successfully.")
             return redirect('profile')
 
-        messages.error(request, 'Something Went Wrong!')
-        return render(request, 'accounts/edit-profile.html', {'form': form})
-
+        messages.error(request, "Something went wrong.")
+        addresses = request.user.addresses.all()
+        return render(request, 'accounts/edit-profile.html', {'form': form, 'addresses': addresses})
 # -------------------------------------------------------------------------------------------------------
