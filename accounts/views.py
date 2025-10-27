@@ -51,10 +51,10 @@ class Register(View):
 
 class ViewProfile(View):
     def get(self, request):
-        return render(request, 'accounts/view-profile.html', {})
-
-    def post(self, request):
-        pass
+        if not request.user.is_authenticated:
+            return redirect('login')
+        addresses = request.user.addresses.all()
+        return render(request, 'accounts/view-profile.html', {'addresses': addresses})
 # -------------------------------------------------------------------------------------------------------
 
 

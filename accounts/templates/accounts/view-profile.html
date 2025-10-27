@@ -20,6 +20,25 @@
     <p>{{ user.email }}</p>
   </div>
 
-  <a href="{% url 'edit-profile' %}" class="btn btn-danger">Edit Profile</a>
+  <div class="mb-3">
+    <label class="form-label fw-bold">Addresses:</label>
+    {% if user.addresses.all %}
+      {% for addr in user.addresses.all %}
+        <div class="border p-2 mb-2">
+          <p class="mb-1"><strong>City:</strong> {{ addr.city }}</p>
+          <p class="mb-1"><strong>Street:</strong> {{ addr.street }}</p>
+          <p class="mb-1"><strong>Number:</strong> {{ addr.number }}</p>
+          <p class="mb-0"><strong>Postal Code:</strong> {{ addr.postal_code }}</p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted">No addresses added yet.</p>
+    {% endif %}
+  </div>
+
+  <div class="d-flex justify-content-between mt-3">
+    <a href="{% url 'edit-profile' %}" class="btn btn-danger w-50 me-2">Edit Profile</a>
+    <a href="#" class="btn btn-danger w-50 ms-2">Change Password</a>
+  </div>
 </div>
 {% endblock %}
