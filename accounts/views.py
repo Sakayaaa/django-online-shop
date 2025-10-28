@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.shortcuts import render
 from django.views import View
 from .forms import RegisterForm, EditProfileForm
@@ -72,7 +73,7 @@ class EditProfile(View):
             request.POST.getlist('city[]'),
             request.POST.getlist('street[]'),
             request.POST.getlist('number[]'),
-            request.POST.getlist('postal_code[]')
+            request.POST.getlist('postal_code[]'),
         ))
 
         if form.is_valid():
@@ -81,18 +82,24 @@ class EditProfile(View):
             request.user.addresses.all().delete()
             for data in addresses_data[:5]:
                 city, street, number, postal_code = [x.strip() for x in data]
-                if any([city, street, number, postal_code]):
-                    Address.objects.create(
+                if all([city, street, number, postal_code]):
+                    addr = Address(
                         user=request.user,
                         city=city,
                         street=street,
                         number=number,
                         postal_code=postal_code
                     )
-
-            messages.success(request, "Profile updated successfully.")
+                    try:
+                        addr.full_clean()
+                        addr.save()
+                        
+                    except ValidationError as e:
+                        messages.error(request, f"Address '{addr.address_summary()}' is invalid: {e}")
+                        continue
+                    
             return redirect('profile')
-
+        
         messages.error(request, "Something went wrong.")
         addresses = request.user.addresses.all()
         return render(request, 'accounts/edit-profile.html', {'form': form, 'addresses': addresses})
