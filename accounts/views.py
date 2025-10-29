@@ -1,13 +1,14 @@
 from django.forms import ValidationError
 from django.shortcuts import render
 from django.views import View
-from .forms import RegisterForm, EditProfileForm
+from .forms import RegisterForm, EditProfileForm, StyledPasswordChangeForm
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import Address
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.contrib.auth import update_session_auth_hash
 
 
 class Login(View):
@@ -106,3 +107,20 @@ class EditProfile(View):
         addresses = request.user.addresses.all()
         return render(request, 'accounts/edit-profile.html', {'form': form, 'addresses': addresses})
 # -------------------------------------------------------------------------------------------------------
+
+
+@method_decorator(login_required, name='dispatch')
+class ChangePassword(View):
+    def get(self, request):
+        form = StyledPasswordChangeForm(request.user)
+        return render(request, 'accounts/change-password.html', {'form': form})
+
+    def post(self, request):
+        form = StyledPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('profile')
+        
+        else:
+            return render(request, 'accounts/change-password.html', {'form': form})

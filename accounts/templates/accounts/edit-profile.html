@@ -6,27 +6,28 @@
 {% block content %}
   <div class="card mx-auto p-4" style="max-width:720px">
     <h3>Edit Profile</h3>
+    <br>
     <form method="post">
       {% csrf_token %}
 
       <!-- User info -->
       <div class="mb-3">
-        <label>First Name</label>
+        <label class="form-label fw-bold">First Name</label>
         <input type="text" name="first_name" class="form-control" value="{{ form.first_name.value }}" />
       </div>
 
       <div class="mb-3">
-        <label>Last Name</label>
+        <label class="form-label fw-bold">Last Name</label>
         <input type="text" name="last_name" class="form-control" value="{{ form.last_name.value }}" />
       </div>
 
       <div class="mb-3">
-        <label>Email</label>
+        <label class="form-label fw-bold">Email</label>
         <input type="email" name="email" class="form-control" value="{{ form.email.value }}" />
       </div>
 
       <hr />
-      <h5>Addresses</h5>
+      <h5 class="form-label fw-bold">Addresses</h5>
       <div id="address-container">
         {% for addr in addresses %}
           <div class="address-box mb-3 p-3" style="border:1px solid black; position: relative;">
