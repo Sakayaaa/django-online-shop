@@ -6,6 +6,8 @@ from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import Address
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class Login(View):
@@ -27,12 +29,11 @@ class Login(View):
 # -------------------------------------------------------------------------------------------------------
 
 
+@method_decorator(login_required, name='dispatch')
 class Logout(View):
     def get(self, request):
-        return render(request, 'accounts/logout.html', {})
-
-    def post(self, request):
-        pass
+        logout(request)
+        return redirect('login')
 # -------------------------------------------------------------------------------------------------------
 
 
@@ -93,13 +94,14 @@ class EditProfile(View):
                     try:
                         addr.full_clean()
                         addr.save()
-                        
+
                     except ValidationError as e:
-                        messages.error(request, f"Address '{addr.address_summary()}' is invalid: {e}")
+                        messages.error(
+                            request, f"Address '{addr.address_summary()}' is invalid: {e}")
                         continue
-                    
+
             return redirect('profile')
-        
+
         messages.error(request, "Something went wrong.")
         addresses = request.user.addresses.all()
         return render(request, 'accounts/edit-profile.html', {'form': form, 'addresses': addresses})
