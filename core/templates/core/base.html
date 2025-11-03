@@ -27,6 +27,7 @@
     <main class="py-4">
       <div class="container">
         {% block content %}
+
         {% endblock %}
       </div>
     </main>
@@ -39,6 +40,14 @@
       </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+      setTimeout(() => {
+        document.querySelectorAll('.fade-out').forEach((el) => {
+          el.style.transition = 'opacity 0.5s'
+          el.style.opacity = '0'
+          setTimeout(() => el.remove(), 500) // حذف بعد از fade
+        })
+      }, 3000) // نمایش به مدت 3 ثانیه
+    </script>
   </body>
 </html>

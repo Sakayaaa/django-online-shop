@@ -13,7 +13,7 @@ from django.contrib.auth import update_session_auth_hash
 
 class Login(View):
     def get(self, request):
-        messages.get_messages(request).used = True  # clear old messages
+        list(messages.get_messages(request))
         return render(request, 'accounts/login.html', {})
 
     def post(self, request):
@@ -35,7 +35,7 @@ class Login(View):
 class Logout(View):
     def get(self, request):
         logout(request)
-        messages.get_messages(request).used = True  # clear leftover messages
+        list(messages.get_messages(request))
         return redirect('login')
 # -------------------------------------------------------------------------------------------------------
 
@@ -78,8 +78,7 @@ class EditProfile(View):
     def post(self, request):
         form = EditProfileForm(request.POST, instance=request.user)
 
-        # پاک کردن پیام‌های قبلی
-        messages.get_messages(request).used = True
+        list(messages.get_messages(request))
 
         addresses_data = list(zip(
             request.POST.getlist('city[]'),
@@ -91,7 +90,6 @@ class EditProfile(View):
         if form.is_valid():
             form.save()
 
-            # پاک‌سازی آدرس‌های قبلی و ثبت آدرس‌های جدید معتبر
             request.user.addresses.all().delete()
             for data in addresses_data[:5]:
                 city, street, number, postal_code = [x.strip() for x in data]
