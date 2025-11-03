@@ -13,6 +13,7 @@ from django.contrib.auth import update_session_auth_hash
 
 class Login(View):
     def get(self, request):
+        messages.get_messages(request).used = True  # clear old messages
         return render(request, 'accounts/login.html', {})
 
     def post(self, request):
@@ -34,6 +35,7 @@ class Login(View):
 class Logout(View):
     def get(self, request):
         logout(request)
+        messages.get_messages(request).used = True  # clear leftover messages
         return redirect('login')
 # -------------------------------------------------------------------------------------------------------
 
@@ -65,12 +67,20 @@ class EditProfile(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('login')
+
         form = EditProfileForm(instance=request.user)
         addresses = request.user.addresses.all()
-        return render(request, 'accounts/edit-profile.html', {'form': form, 'addresses': addresses})
+        return render(request, 'accounts/edit-profile.html', {
+            'form': form,
+            'addresses': addresses
+        })
 
     def post(self, request):
         form = EditProfileForm(request.POST, instance=request.user)
+
+        # پاک کردن پیام‌های قبلی
+        messages.get_messages(request).used = True
+
         addresses_data = list(zip(
             request.POST.getlist('city[]'),
             request.POST.getlist('street[]'),
@@ -81,6 +91,7 @@ class EditProfile(View):
         if form.is_valid():
             form.save()
 
+            # پاک‌سازی آدرس‌های قبلی و ثبت آدرس‌های جدید معتبر
             request.user.addresses.all().delete()
             for data in addresses_data[:5]:
                 city, street, number, postal_code = [x.strip() for x in data]
@@ -95,17 +106,21 @@ class EditProfile(View):
                     try:
                         addr.full_clean()
                         addr.save()
-
                     except ValidationError as e:
                         messages.error(
-                            request, f"Address '{addr.address_summary()}' is invalid: {e}")
-                        continue
+                            request,
+                            f"Address '{addr.address_summary()}' is invalid: {e}"
+                        )
 
+            messages.success(request, "Profile updated successfully!")
             return redirect('profile')
-
-        messages.error(request, "Something went wrong.")
+    
+        messages.error(request, "Please correct the errors below.")
         addresses = request.user.addresses.all()
-        return render(request, 'accounts/edit-profile.html', {'form': form, 'addresses': addresses})
+        return render(request, 'accounts/edit-profile.html', {
+            'form': form,
+            'addresses': addresses
+        })
 # -------------------------------------------------------------------------------------------------------
 
 
@@ -121,6 +136,6 @@ class ChangePassword(View):
             user = form.save()
             update_session_auth_hash(request, user)
             return redirect('profile')
-        
+
         else:
             return render(request, 'accounts/change-password.html', {'form': form})
