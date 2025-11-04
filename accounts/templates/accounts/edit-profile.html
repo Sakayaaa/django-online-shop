@@ -5,8 +5,17 @@
 
 {% block content %}
   <div class="card mx-auto p-4" style="max-width:720px">
+    {% if messages %}
+      {% for msg in messages %}
+        {% if msg.tags == 'error' %}
+          <p class="alert alert-danger">{{ msg|safe }}</p>
+        {% else %}
+          <p class="alert alert-success">{{ msg }}</p>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
     <h3>Edit Profile</h3>
-    <br>
+    <br />
     <form method="post">
       {% csrf_token %}
 
@@ -53,7 +62,7 @@
       </div>
 
       <button type="button" id="add-address" class="btn btn-outline-secondary mb-3">+ Add Address</button>
-      <br/>
+      <br />
       <a href="{% url 'profile' %}" class="btn btn-secondary me-2">Cancel</a>
       <button type="submit" class="btn btn-danger">Save Changes</button>
     </form>
@@ -68,14 +77,14 @@
       div.className = 'address-box mb-3 p-3'
       div.style = 'border:1px solid black; position: relative;'
       div.innerHTML = `
-              <button type="button" class="btn btn-danger remove-address" 
-                      style="position:absolute; top:5px; right:5px; width:30px; height:30px; font-size:20px; padding:0;">🗑
-              </button>
-              <div class="mb-2"><label>City</label><input type="text" name="city[]" class="form-control"></div>
-              <div class="mb-2"><label>Street</label><input type="text" name="street[]" class="form-control"></div>
-              <div class="mb-2"><label>House Number</label><input type="text" name="number[]" class="form-control"></div>
-              <div class="mb-2"><label>Postal Code</label><input type="text" name="postal_code[]" class="form-control"></div>
-            `
+                      <button type="button" class="btn btn-danger remove-address" 
+                              style="position:absolute; top:5px; right:5px; width:30px; height:30px; font-size:20px; padding:0;">🗑
+                      </button>
+                      <div class="mb-2"><label>City</label><input type="text" name="city[]" class="form-control"></div>
+                      <div class="mb-2"><label>Street</label><input type="text" name="street[]" class="form-control"></div>
+                      <div class="mb-2"><label>House Number</label><input type="text" name="number[]" class="form-control"></div>
+                      <div class="mb-2"><label>Postal Code</label><input type="text" name="postal_code[]" class="form-control"></div>
+                    `
       attachRemove(div)
       return div
     }

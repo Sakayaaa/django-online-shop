@@ -14,6 +14,8 @@ from django.contrib.auth import update_session_auth_hash
 class Login(View):
     def get(self, request):
         list(messages.get_messages(request))
+        if request.user.is_authenticated:
+            return redirect('profile')
         return render(request, 'accounts/login.html', {})
 
     def post(self, request):
@@ -77,7 +79,6 @@ class EditProfile(View):
 
     def post(self, request):
         form = EditProfileForm(request.POST, instance=request.user)
-
         list(messages.get_messages(request))
 
         addresses_data = list(zip(
@@ -90,7 +91,9 @@ class EditProfile(View):
         if form.is_valid():
             form.save()
 
-            request.user.addresses.all().delete()
+            valid_addresses = []
+            errors_found = False
+
             for data in addresses_data[:5]:
                 city, street, number, postal_code = [x.strip() for x in data]
                 if all([city, street, number, postal_code]):
@@ -103,17 +106,23 @@ class EditProfile(View):
                     )
                     try:
                         addr.full_clean()
-                        addr.save()
+                        valid_addresses.append(addr)
                     except ValidationError as e:
-                        messages.error(
-                            request,
-                            f"Address '{addr.address_summary()}' is invalid: {e}"
-                        )
+                        for field, errors in e.message_dict.items():
+                            for err in errors:
+                                messages.error(request, f"{field.replace('_', ' ').title()}: {err}")
+                        errors_found = True
 
-            messages.success(request, "Profile updated successfully!")
-            return redirect('profile')
-    
-        messages.error(request, "Please correct the errors below.")
+            if not errors_found:
+                request.user.addresses.all().delete()
+                for addr in valid_addresses:
+                    addr.save()
+                messages.success(request, "Profile updated successfully!")
+                return redirect('profile')
+
+        else:
+            messages.error(request, "Please correct the errors below.")
+
         addresses = request.user.addresses.all()
         return render(request, 'accounts/edit-profile.html', {
             'form': form,
