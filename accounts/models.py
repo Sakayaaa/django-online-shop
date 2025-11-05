@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .validators import house_number_validator
-from mptt.models import MPTTModel, TreeForeignKey
 
 
 class CustomUser(AbstractUser):
@@ -29,17 +28,4 @@ class Address(models.Model):
     def address_summary(self):
         return f"{self.city}, {self.street} {self.number}, {self.postal_code}"
 
-
-class Category(MPTTModel):
-    name = models.CharField(max_length=30)
-    slug = models.SlugField(unique=True)
-    parent = TreeForeignKey('self', on_delete=models.CASCADE,
-                            null=True, blank=True, related_name='children')
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    class MPTTMeta:
-        order_insertation_by = ['name']
-
-    def __str__(self):
-        return self.name
+# ___________________________________________________________________________________________________#
