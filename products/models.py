@@ -37,5 +37,5 @@ class Category(BaseModel, MPTTModel):
 
 class Product(BaseModel):
     category = models.OneToOneField(Category, on_delete=models.CASCADE)
-    price = models.IntegerField(max_length=9)
+    price = models.IntegerField()
     img = models.ImageField(upload_to=upload_to_app)
