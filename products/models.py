@@ -14,7 +14,8 @@ class BaseModel(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    image = models.ImageField(upload_to=upload_to_app, default='question_mark.jpg')
+    
     class Meta:
         abstract = True
 
@@ -38,4 +39,3 @@ class Category(BaseModel, MPTTModel):
 class Product(BaseModel):
     category = models.OneToOneField(Category, on_delete=models.CASCADE)
     price = models.IntegerField()
-    img = models.ImageField(upload_to=upload_to_app)
