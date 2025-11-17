@@ -15,7 +15,7 @@ class BaseModel(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    image = models.ImageField(upload_to=upload_to_app, default='core/static/core/img/question_mark.jpg')
+    image = models.ImageField(upload_to=upload_to_app, default='defaults/question_mark.jpg', blank=True)
     
     def save(self, *args, **kwargs):
         if not self.slug:
