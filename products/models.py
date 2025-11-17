@@ -36,12 +36,12 @@ class Category(BaseModel, MPTTModel):
     )
 
     class MPTTMeta:
-        order_insertation_by = ['name']
+        order_insertion_by = ['name']
 
     def __str__(self):
         return self.name
 
 
 class Product(BaseModel):
-    category = models.OneToOneField(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     price = models.IntegerField()
