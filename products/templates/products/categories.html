@@ -1,42 +1,30 @@
 {% extends 'core/base.html' %}
 {% load static %}
-{% block title %}Categories{% endblock %}
+{% block title %}
+  Categories
+{% endblock %}
 
 {% block content %}
-<h1 class="text-center text-danger mb-4">Categories</h1>
+  <h1 class="text-center text-danger mb-4">Categories</h1>
 
-<div class="row justify-content-center">
+  <div class="row justify-content-center">
     {% for category in root_categories %}
-    <div class="col-md-3 col-sm-6 mb-4">
+      <div class="col-md-3 col-sm-6 mb-4">
         <div class="card border-danger h-100 category-item text-center">
-            {% if category.image %}
-            <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}">
-            {% else %}
-            <img src="{% static 'core/media/defaults/question_mark.jpg' %}" class="card-img-top" alt="{{ category.name }}">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title text-danger">{{ category.name }}</h5>
-            </div>
+          {% if category.image %}
+            <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}" />
+          {% else %}
+            <img src="{% static 'core/defaults/question_mark.jpg' %}" class="card-img-top" alt="{{ category.name }}" />
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title text-danger">{{ category.name }}</h5>
+          </div>
         </div>
-    </div>
+      </div>
     {% empty %}
-    <p class="text-center text-muted">There are no categories available.</p>
+      <p class="text-center text-muted">There are no categories available.</p>
     {% endfor %}
-</div>
+  </div>
 
-<style>
-.category-item {
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-}
-.category-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(214,40,40,0.3);
-}
-.card img {
-    height: 150px;
-    object-fit: cover;
-    border-bottom: 2px solid #d62828;
-}
-</style>
+
 {% endblock %}

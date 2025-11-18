@@ -1,18 +1,35 @@
 /* Red / White theme - desktop only */
-body { font-family: Inter, Arial, sans-serif; background: #fff; color: #222; }
-.navbar-brand { color: #c62828 !important; }
-.btn-danger { background-color: #c62828; border-color: #b71c1c; }
-.btn-danger:hover { background-color: #b71c1c; }
-.card { border: 1px solid #eee; }
-.small-muted { color: #6c757d; }
-footer { background: #fff; }
+body {
+  font-family: Inter, Arial, sans-serif;
+  background: #fff;
+  color: #222;
+}
+.navbar-brand {
+  color: #c62828 !important;
+}
+.btn-danger {
+  background-color: #c62828;
+  border-color: #b71c1c;
+}
+.btn-danger:hover {
+  background-color: #b71c1c;
+}
+.card {
+  border: 1px solid #eee;
+}
+.small-muted {
+  color: #6c757d;
+}
+footer {
+  background: #fff;
+}
 .edit-profile-container {
   max-width: 500px;
   margin: 50px auto;
   background: #fff;
   padding: 30px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .edit-profile-container h1 {
@@ -50,4 +67,18 @@ footer { background: #fff; }
 
 .btn-save:hover {
   background: #b71c1c;
+}
+
+.category-item {
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.category-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(214, 40, 40, 0.3);
+}
+.card img {
+  height: 150px;
+  object-fit: cover;
+  border-bottom: 2px solid #d62828;
 }
