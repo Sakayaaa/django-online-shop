@@ -3,7 +3,7 @@
 {% block title %}Categories{% endblock %}
 
 {% block content %}
-<h1 class="text-center text-danger mb-4">دسته‌بندی‌ها</h1>
+<h1 class="text-center text-danger mb-4">Categories</h1>
 
 <div class="row justify-content-center">
     {% for category in root_categories %}
@@ -20,7 +20,7 @@
         </div>
     </div>
     {% empty %}
-    <p class="text-center text-muted">هیچ دسته‌بندی‌ای موجود نیست.</p>
+    <p class="text-center text-muted">There are no categories available.</p>
     {% endfor %}
 </div>
 
