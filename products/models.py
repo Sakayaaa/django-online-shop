@@ -16,12 +16,20 @@ class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to=upload_to_app, blank=True)
-    
+
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
+        base_slug = slugify(self.name)
+
+        if self.parent:
+            new_slug = f"{slugify(self.parent.name)}-{base_slug}"
+        else:
+            new_slug = base_slug
+
+        if self.slug != new_slug:
+            self.slug = new_slug
+
         super().save(*args, **kwargs)
-    
+
     class Meta:
         abstract = True
 

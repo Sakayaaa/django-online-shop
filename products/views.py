@@ -1,11 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import View
 from .models import Category
 
+
 class Categories(View):
-    def get(self, request):
-        root_categories = Category.objects.filter(parent__isnull=True)
-        return render(request, 'products/categories.html', {'root_categories':root_categories})
-    
+    def get(self, request, slug=None):
+        if slug:
+            parent = get_object_or_404(Category, slug=slug)
+            categories = parent.get_children()
+            title = parent.name
+        else:
+            parent = None
+            categories = Category.objects.filter(parent__isnull=True)
+            title = 'Categories'
+
+        return render(request, 'products/categories.html', {'categories': categories, 'parent': parent, 'page_title': title})
+
     def post(self, request):
         pass

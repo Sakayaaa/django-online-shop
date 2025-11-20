@@ -5,26 +5,29 @@
 {% endblock %}
 
 {% block content %}
-  <h1 class="text-center text-danger mb-4">Categories</h1>
+  <h1 class="text-center text-danger mb-4">{{ page_title }}</h1>
+
+  {% if parent %}
+    <a onclick="history.back()" class="btn btn-outline-danger mb-3">Go Back</a>
+  {% endif %}
 
   <div class="row justify-content-center">
-    {% for category in root_categories %}
+    {% for category in categories %}
       <div class="col-md-3 col-sm-6 mb-4">
         <div class="card border-danger h-100 category-item text-center">
+          <a href="{% url 'category_children' category.slug %}" class="stretched-link"></a>
           {% if category.image %}
             <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}" />
           {% else %}
             <img src="{% static 'core/defaults/question_mark.jpg' %}" class="card-img-top" alt="{{ category.name }}" />
           {% endif %}
-          <div class="card-body">
+          <div class="card-body position-relative">
             <h5 class="card-title text-danger">{{ category.name }}</h5>
           </div>
         </div>
       </div>
     {% empty %}
-      <p class="text-center text-muted">There are no categories available.</p>
+      <p class="text-center text-muted">There are no products available.</p>
     {% endfor %}
   </div>
-
-
 {% endblock %}
