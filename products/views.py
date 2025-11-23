@@ -3,7 +3,7 @@ from django.views import View
 from .models import Category
 
 
-class Categories(View):
+class CategoryList(View):
     def get(self, request, slug=None):
         if slug:
             parent = get_object_or_404(Category, slug=slug)
