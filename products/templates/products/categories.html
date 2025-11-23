@@ -15,7 +15,7 @@
     {% for category in categories %}
       <div class="col-md-3 col-sm-6 mb-4">
         <div class="card border-danger h-100 category-item text-center">
-          <a href="{% url 'category_children' category.slug %}" class="stretched-link"></a>
+          <a href="{% url 'products:category_children' category.slug %}" class="stretched-link"></a>
           {% if category.image %}
             <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}" />
           {% else %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.views import View
-from .models import Category
+from .models import Category, Product
 
 
 class CategoryList(View):
@@ -10,7 +11,7 @@ class CategoryList(View):
             children = parent.get_children()
 
             if not children.exists():
-                return redirect('products:list') + f'?category={parent.slug}'
+                return redirect(f"{reverse('products:product_list')}?category={parent.slug}")
 
             categories = children
             title = parent.name
@@ -25,10 +26,28 @@ class CategoryList(View):
             'page_title': title
         })
 
-    def post(self, request):
-        pass
 
 
 class ProductList(View):
     def get(self, request):
-        pass
+        category_slug = request.GET.get('category')
+        products = Product.objects.all()
+        category = None
+
+        if category_slug:
+            category = get_object_or_404(Category, slug=category_slug)
+
+            descendants = category.get_descendants(include_self=True)
+
+            products = products.filter(category__in=descendants)
+
+        context = {
+            'products': products,
+            'category': category,
+        }
+
+        return render(request, 'products/product_list.html', context)
+
+
+class ProductDetail(View):
+    pass
