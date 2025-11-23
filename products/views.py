@@ -27,3 +27,8 @@ class CategoryList(View):
 
     def post(self, request):
         pass
+
+
+class ProductList(View):
+    def get(self, request):
+        pass
