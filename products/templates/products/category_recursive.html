@@ -1,0 +1,10 @@
+<li class="dropdown-item" data-slug="{{ category.slug }}">
+  <span class="item-label">{{ category.name }}</span>
+  {% if category.get_children %}
+    <ul class="nested-list" style="display:none;">
+      {% for child in category.get_children %}
+        {% include 'products/category_recursive.html' with category=child %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+</li>

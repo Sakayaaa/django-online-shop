@@ -1,78 +1,168 @@
 {% extends 'core/base.html' %}
-{% block title %}Products - DigiStore{% endblock %}
+{% block title %}
+  Products - DigiStore
+{% endblock %}
+{% load tree_tags %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h3 class="mb-0">Products</h3>
-  <div class="small text-muted">
-    {% if category %}
-      Showing results for: <strong>{{ category.name }}</strong>
-    {% else %}
-      Showing all products
-    {% endif %}
-  </div>
-</div>
-
-<div class="row">
-  <!-- Sidebar Filters -->
-  <aside class="col-md-3">
-    <div class="card p-3">
-      <h6>Filters</h6>
-
-      <!-- Category Filter -->
-      <form method="get">
-        <div class="mb-3">
-          <label class="form-label">Category</label>
-          <select name="category" class="form-select" onchange="this.form.submit()">
-            <option value="">All</option>
-
-            {% for c in all_categories %}
-              <option value="{{ c.slug }}" 
-                {% if category and c.slug == category.slug %}selected{% endif %}>
-                {{ c.name }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
-      </form>
-
-      <!-- Brand filter — بعداً اضافه می‌کنی -->
-      <div class="mb-3">
-        <label class="form-label">Brand</label>
-        <select class="form-select">
-          <option>All</option>
-        </select>
-      </div>
-
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">Products</h3>
+    <div class="small text-muted">
+      {% if category %}
+        Showing results for: <strong>{{ category.name }}</strong>
+      {% else %}
+        Showing all products
+      {% endif %}
     </div>
-  </aside>
+  </div>
 
-  <!-- Products -->
-  <div class="col-md-9">
-    <div class="row g-4">
-      {% for p in products %}
-        <div class="col-md-4">
-          <div class="card product-card">
+  <div class="row">
+    <!-- Sidebar Filters -->
+    <aside class="col-md-3">
+      <div class="card p-3">
+        <h6>Filters</h6>
 
-            {% if p.image %}
-              <img src="{{ p.image.url }}" class="card-img-top" alt="{{ p.name }}">
-            {% endif %}
-
-            <div class="card-body">
-              <h6>{{ p.name }}</h6>
-              <p class="text-danger fw-bold">${{ p.price }}</p>
-
-              <a href="{% url 'products:product_detail' p.pk %}" 
-                 class="btn btn-outline-danger btn-sm w-100">
-                View
-              </a>
+        <!-- Category Filter -->
+        <form method="get">
+          <div class="mb-3">
+            <label class="form-label" style="font-size: larger;">Categories</label>
+            <div class="category-dropdown">
+              <div class="dropdown-header">Select Category</div>
+              <ul class="dropdown-list" style="display:none;">
+                {% for c in all_categories %}
+                  {% if not c.parent %}
+                    {% include 'products/category_recursive.html' with category=c %}
+                  {% endif %}
+                {% endfor %}
+              </ul>
             </div>
           </div>
+
+          <style>
+            .category-dropdown {
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              width: 100%;
+              position: relative;
+              user-select: none;
+            }
+            
+            .dropdown-header {
+              padding: 6px 12px;
+              cursor: pointer;
+              background-color: #f8f9fa;
+              border-bottom: 1px solid #ddd;
+            }
+            
+            .dropdown-list,
+            .nested-list {
+              list-style: none;
+              margin: 0;
+              padding: 0 0 0 12px;
+              display: none; /* دیفالت بسته */
+            }
+            
+            .dropdown-item {
+              padding: 4px 12px;
+              cursor: pointer;
+              position: relative;
+              transition: background-color 0.2s;
+              border: 1px solid #ddd; /* کمرنگ و باریک */
+              border-radius: 3px;
+              margin-bottom: 2px;
+            }
+            
+            /* Parent selected */
+            .dropdown-item.selected.parent {
+              background-color: #dcdcdcff; /* پررنگ‌تر */
+              font-weight: bold;
+            }
+            
+            /* Child selected */
+            .nested-list .dropdown-item.selected.child {
+              background-color: #e0e0e0; /* روشن‌تر */
+              font-weight: normal;
+            }
+            
+            /* Hover effect */
+            .dropdown-item:hover {
+              background-color: #b8b8b8ff;
+            }
+          </style>
+
+          <script>
+            const dropdownHeader = document.querySelector('.dropdown-header')
+            const dropdownList = document.querySelector('.dropdown-list')
+            
+            dropdownHeader.addEventListener('click', () => {
+              dropdownList.style.display = dropdownList.style.display === 'block' ? 'none' : 'block'
+            })
+            
+            // باز و بسته کردن هر سطح و اعمال کلاس parent/child
+            document.querySelectorAll('.dropdown-item').forEach((item) => {
+              item.addEventListener('click', function (e) {
+                e.stopPropagation()
+            
+                const nested = this.querySelector(':scope > .nested-list')
+                if (nested) {
+                  nested.style.display = nested.style.display === 'none' ? 'block' : 'none'
+                }
+            
+                // حذف selected از همه
+                document.querySelectorAll('.dropdown-item').forEach((b) => b.classList.remove('selected', 'parent', 'child'))
+            
+                // اضافه کردن selected و نوع
+                this.classList.add('selected')
+                if (nested) {
+                  this.classList.add('parent')
+                } else {
+                  this.classList.add('child')
+                }
+              })
+            })
+            
+            // Apply
+            document.getElementById('apply-filter').addEventListener('click', function () {
+              const selected = document.querySelector('.dropdown-item.selected')
+              if (selected) {
+                const slug = selected.dataset.slug
+                window.location.href = `?category=${slug}`
+              }
+            })
+          </script>
+        </form>
+
+        <!-- Brand filter -->
+        <div class="mb-3">
+          <label class="form-label" style="font-size: larger;">Brand</label>
+          <select class="form-select">
+            <option>All</option>
+          </select>
         </div>
-      {% empty %}
-        <p class="text-muted">No products found.</p>
-      {% endfor %}
+        <button id="apply-filter" class="btn btn-sm btn-primary mt-2">Apply</button>
+      </div>
+    </aside>
+
+    <!-- Products -->
+    <div class="col-md-9">
+      <div class="row g-4">
+        {% for p in products %}
+          <div class="col-md-4">
+            <div class="card product-card">
+              {% if p.image %}
+                <img src="{{ p.image.url }}" class="card-img-top" alt="{{ p.name }}" />
+              {% endif %}
+              <div class="card-body">
+                <h6>{{ p.name }}</h6>
+                <p class="text-danger fw-bold">${{ p.price }}</p>
+                <a href="{% url 'products:product_detail' p.pk %}" class="btn btn-outline-danger btn-sm w-100">View</a>
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-muted">No products found.</p>
+        {% endfor %}
+      </div>
     </div>
   </div>
-</div>
 {% endblock %}

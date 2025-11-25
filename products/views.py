@@ -33,7 +33,7 @@ class ProductList(View):
         category_slug = request.GET.get('category')
         products = Product.objects.all()
         category = None
-        all_categories = Category.objects.all()
+        all_categories = Category.objects.all().order_by('tree_id', 'lft')
 
         if category_slug:
             category = get_object_or_404(Category, slug=category_slug)
