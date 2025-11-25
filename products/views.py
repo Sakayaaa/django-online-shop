@@ -33,17 +33,17 @@ class ProductList(View):
         category_slug = request.GET.get('category')
         products = Product.objects.all()
         category = None
+        all_categories = Category.objects.all()
 
         if category_slug:
             category = get_object_or_404(Category, slug=category_slug)
-
             descendants = category.get_descendants(include_self=True)
-
             products = products.filter(category__in=descendants)
 
         context = {
             'products': products,
             'category': category,
+            'all_categories': all_categories,
         }
 
         return render(request, 'products/product_list.html', context)

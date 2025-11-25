@@ -13,11 +13,11 @@ def upload_to_app(instance, filename):
 
 class BaseModel(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to=upload_to_app, blank=True)
+    slug = models.SlugField(unique=True, blank=True)
 
     class Meta:
         abstract = True
@@ -41,12 +41,13 @@ class Category(BaseModel, MPTTModel):
 
     def get_absolute_url(self):
         return reverse("category_children", kwargs={"slug": self.slug})
-
+    
     def save(self, *args, **kwargs):
         base_slug = slugify(self.name)
 
         if self.parent:
-            new_slug = f"{slugify(self.parent.name)}-{base_slug}"
+            parent_slug = slugify(self.parent.name)
+            new_slug = f"{parent_slug}-{base_slug}"
         else:
             new_slug = base_slug
 
@@ -54,6 +55,8 @@ class Category(BaseModel, MPTTModel):
             self.slug = new_slug
 
         super().save(*args, **kwargs)
+
+
 # -----------------------------------------------------------------------------------------------------
 
 
@@ -61,10 +64,15 @@ class Brand(BaseModel):
     def __str__(self):
         return super().__str__()
 
+        
+
 
 class Product(BaseModel):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     price = models.IntegerField()
+    is_discounted = models.BooleanField(default=False)
+    discounted_price = models.IntegerField(null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse("product_detail", kwargs={"pk": self.pk})
