@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Category, Product
+from .models import Category, Product, Brand
 from mptt.admin import DraggableMPTTAdmin
 
-admin.site.register([Product])
+admin.site.register([Product, Brand])
 admin.site.register(
     Category,
     DraggableMPTTAdmin,

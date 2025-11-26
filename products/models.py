@@ -19,6 +19,9 @@ class BaseModel(models.Model):
     image = models.ImageField(upload_to=upload_to_app, blank=True)
     slug = models.SlugField(unique=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         abstract = True
 # -----------------------------------------------------------------------------------------------------
@@ -36,12 +39,9 @@ class Category(BaseModel, MPTTModel):
     class MPTTMeta:
         order_insertion_by = ['name']
 
-    def __str__(self):
-        return self.name
-
     def get_absolute_url(self):
         return reverse("category_children", kwargs={"slug": self.slug})
-    
+
     def save(self, *args, **kwargs):
         base_slug = slugify(self.name)
 
@@ -64,16 +64,30 @@ class Brand(BaseModel):
     def __str__(self):
         return super().__str__()
 
-        
+    def save(self, *args, **kwargs):
+        new_slug = slugify(self.name)
+
+        if self.slug != new_slug:
+            self.slug = new_slug
+
+        super().save(*args, **kwargs)
 
 
 class Product(BaseModel):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
-    price = models.IntegerField()
+    price = models.DecimalField(max_digits=12, decimal_places=2)
     is_discounted = models.BooleanField(default=False)
-    discounted_price = models.IntegerField(null=True, blank=True)
+    discounted_price = models.DecimalField(null=True, blank=True, max_digits=12, decimal_places=2)
 
     def get_absolute_url(self):
-        return reverse("product_detail", kwargs={"pk": self.pk})
+        return reverse("product_detail", kwargs={"slug": self.slug})
+
+    def save(self, *args, **kwargs):
+        new_slug = slugify(self.name)
+
+        if self.slug != new_slug:
+            self.slug = new_slug
+
+        super().save(*args, **kwargs)
 # -----------------------------------------------------------------------------------------------------

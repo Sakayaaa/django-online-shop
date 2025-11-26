@@ -27,7 +27,6 @@ class CategoryList(View):
         })
 
 
-
 class ProductList(View):
     def get(self, request):
         category_slug = request.GET.get('category')
@@ -50,4 +49,9 @@ class ProductList(View):
 
 
 class ProductDetail(View):
-    pass
+    def get(self, request, slug):
+        product = get_object_or_404(Product, slug=slug)
+
+        return render(request, 'products/product_detail.html', {
+            'product': product
+        })

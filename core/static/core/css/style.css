@@ -82,3 +82,52 @@ footer {
   object-fit: cover;
   border-bottom: 2px solid #d62828;
 }
+.category-dropdown {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  position: relative;
+  user-select: none;
+}
+
+.dropdown-header {
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.dropdown-list,
+.nested-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 12px;
+  display: none; /* دیفالت بسته */
+}
+
+.dropdown-item {
+  padding: 4px 12px;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s;
+  border: 1px solid #ddd; /* کمرنگ و باریک */
+  border-radius: 3px;
+  margin-bottom: 2px;
+}
+
+
+.dropdown-item.selected.parent {
+  background-color: #dcdcdcff; /* پررنگ‌تر */
+  font-weight: bold;
+}
+
+
+.nested-list .dropdown-item.selected.child {
+  background-color: #e0e0e0; /* روشن‌تر */
+  font-weight: normal;
+}
+
+
+.dropdown-item:hover {
+  background-color: #b8b8b8ff;
+}

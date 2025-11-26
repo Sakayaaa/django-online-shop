@@ -37,99 +37,6 @@
               </ul>
             </div>
           </div>
-
-          <style>
-            .category-dropdown {
-              border: 1px solid #ddd;
-              border-radius: 4px;
-              width: 100%;
-              position: relative;
-              user-select: none;
-            }
-            
-            .dropdown-header {
-              padding: 6px 12px;
-              cursor: pointer;
-              background-color: #f8f9fa;
-              border-bottom: 1px solid #ddd;
-            }
-            
-            .dropdown-list,
-            .nested-list {
-              list-style: none;
-              margin: 0;
-              padding: 0 0 0 12px;
-              display: none; /* دیفالت بسته */
-            }
-            
-            .dropdown-item {
-              padding: 4px 12px;
-              cursor: pointer;
-              position: relative;
-              transition: background-color 0.2s;
-              border: 1px solid #ddd; /* کمرنگ و باریک */
-              border-radius: 3px;
-              margin-bottom: 2px;
-            }
-            
-            /* Parent selected */
-            .dropdown-item.selected.parent {
-              background-color: #dcdcdcff; /* پررنگ‌تر */
-              font-weight: bold;
-            }
-            
-            /* Child selected */
-            .nested-list .dropdown-item.selected.child {
-              background-color: #e0e0e0; /* روشن‌تر */
-              font-weight: normal;
-            }
-            
-            /* Hover effect */
-            .dropdown-item:hover {
-              background-color: #b8b8b8ff;
-            }
-          </style>
-
-          <script>
-            const dropdownHeader = document.querySelector('.dropdown-header')
-            const dropdownList = document.querySelector('.dropdown-list')
-            
-            dropdownHeader.addEventListener('click', () => {
-              dropdownList.style.display = dropdownList.style.display === 'block' ? 'none' : 'block'
-            })
-            
-            // باز و بسته کردن هر سطح و اعمال کلاس parent/child
-            document.querySelectorAll('.dropdown-item').forEach((item) => {
-              item.addEventListener('click', function (e) {
-                e.stopPropagation()
-            
-                const nested = this.querySelector(':scope > .nested-list')
-                if (nested) {
-                  nested.style.display = nested.style.display === 'none' ? 'block' : 'none'
-                }
-            
-                // حذف selected از همه
-                document.querySelectorAll('.dropdown-item').forEach((b) => b.classList.remove('selected', 'parent', 'child'))
-            
-                // اضافه کردن selected و نوع
-                this.classList.add('selected')
-                if (nested) {
-                  this.classList.add('parent')
-                } else {
-                  this.classList.add('child')
-                }
-              })
-            })
-            
-            // Apply
-            document.getElementById('apply-filter').addEventListener('click', function () {
-              const selected = document.querySelector('.dropdown-item.selected')
-              if (selected) {
-                const slug = selected.dataset.slug
-                window.location.href = `?category=${slug}`
-              }
-            })
-          </script>
         </form>
 
         <!-- Brand filter -->
@@ -139,6 +46,7 @@
             <option>All</option>
           </select>
         </div>
+
         <button id="apply-filter" class="btn btn-sm btn-primary mt-2">Apply</button>
       </div>
     </aside>
@@ -155,7 +63,7 @@
               <div class="card-body">
                 <h6>{{ p.name }}</h6>
                 <p class="text-danger fw-bold">${{ p.price }}</p>
-                <a href="{% url 'products:product_detail' p.pk %}" class="btn btn-outline-danger btn-sm w-100">View</a>
+                <a href="{% url 'products:product_detail' p.slug %}" class="btn btn-outline-danger btn-sm w-100">View</a>
               </div>
             </div>
           </div>
@@ -165,4 +73,43 @@
       </div>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const dropdownHeader = document.querySelector('.dropdown-header')
+      const dropdownList = document.querySelector('.dropdown-list')
+    
+      dropdownHeader.addEventListener('click', () => {
+        dropdownList.style.display = dropdownList.style.display === 'block' ? 'none' : 'block'
+      })
+    
+      document.querySelectorAll('.dropdown-item').forEach((item) => {
+        item.addEventListener('click', function (e) {
+          e.stopPropagation()
+    
+          const nested = this.querySelector(':scope > .nested-list')
+          if (nested) {
+            nested.style.display = nested.style.display === 'none' ? 'block' : 'none'
+          }
+    
+          document.querySelectorAll('.dropdown-item').forEach((b) => b.classList.remove('selected', 'parent', 'child'))
+    
+          this.classList.add('selected')
+          if (nested) {
+            this.classList.add('parent')
+          } else {
+            this.classList.add('child')
+          }
+        })
+      })
+    
+      document.getElementById('apply-filter').addEventListener('click', () => {
+        const selected = document.querySelector('.dropdown-item.selected')
+        if (selected) {
+          const slug = selected.dataset.slug
+          window.location.href = `?category=${slug}`
+        }
+      })
+    })
+  </script>
 {% endblock %}
