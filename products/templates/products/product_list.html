@@ -17,41 +17,43 @@
   </div>
 
   <div class="row">
-    <!-- Sidebar Filters -->
     <aside class="col-md-3">
       <div class="card p-3">
         <h6>Filters</h6>
 
         <!-- Category Filter -->
-        <form method="get">
-          <div class="mb-3">
-            <label class="form-label" style="font-size: larger;">Categories</label>
-            <div class="category-dropdown">
-              <div class="dropdown-header">Select Category</div>
-              <ul class="dropdown-list" style="display:none;">
-                {% for c in all_categories %}
-                  {% if not c.parent %}
-                    {% include 'products/category_recursive.html' with category=c %}
-                  {% endif %}
-                {% endfor %}
-              </ul>
-            </div>
+        <div class="mb-3">
+          <label class="form-label" style="font-size: larger;">Categories</label>
+
+          <div class="category-dropdown">
+            <div class="dropdown-header">Select Category</div>
+            <ul class="dropdown-list" style="display:none;">
+              {% for c in all_categories %}
+                {% if not c.parent %}
+                  {% include 'products/category_recursive.html' with category=c %}
+                {% endif %}
+              {% endfor %}
+            </ul>
           </div>
-        </form>
+        </div>
 
         <!-- Brand filter -->
         <div class="mb-3">
           <label class="form-label" style="font-size: larger;">Brand</label>
-          <select class="form-select">
-            <option>All</option>
+          <select name="brand" class="form-select">
+            <option value="">All</option>
+            {% for b in brands %}
+              <option value="{{ b.slug }}" {% if brand and brand.slug == b.slug %}selected{% endif %}>
+                {{ b.name }}
+              </option>
+            {% endfor %}
           </select>
         </div>
 
-        <button id="apply-filter" class="btn btn-sm btn-primary mt-2">Apply</button>
+        <button id="apply-filter" class="btn btn-sm btn-primary mt-2 w-100">Apply</button>
       </div>
     </aside>
 
-    <!-- Products -->
     <div class="col-md-9">
       <div class="row g-4">
         {% for p in products %}
@@ -78,37 +80,44 @@
     document.addEventListener('DOMContentLoaded', () => {
       const dropdownHeader = document.querySelector('.dropdown-header')
       const dropdownList = document.querySelector('.dropdown-list')
-    
+
       dropdownHeader.addEventListener('click', () => {
         dropdownList.style.display = dropdownList.style.display === 'block' ? 'none' : 'block'
       })
-    
+
       document.querySelectorAll('.dropdown-item').forEach((item) => {
         item.addEventListener('click', function (e) {
           e.stopPropagation()
-    
+
           const nested = this.querySelector(':scope > .nested-list')
           if (nested) {
             nested.style.display = nested.style.display === 'none' ? 'block' : 'none'
           }
-    
-          document.querySelectorAll('.dropdown-item').forEach((b) => b.classList.remove('selected', 'parent', 'child'))
-    
+
+          document.querySelectorAll('.dropdown-item').forEach((b) =>
+            b.classList.remove('selected', 'parent', 'child')
+          )
+
           this.classList.add('selected')
-          if (nested) {
-            this.classList.add('parent')
-          } else {
-            this.classList.add('child')
-          }
+          if (nested) this.classList.add('parent')
+          else this.classList.add('child')
         })
       })
-    
+
       document.getElementById('apply-filter').addEventListener('click', () => {
-        const selected = document.querySelector('.dropdown-item.selected')
-        if (selected) {
-          const slug = selected.dataset.slug
-          window.location.href = `?category=${slug}`
+        const selectedCategory = document.querySelector('.dropdown-item.selected')
+        const brand = document.querySelector("select[name='brand']").value
+
+        let url = "?"
+
+        if (selectedCategory) {
+          url += `category=${selectedCategory.dataset.slug}&`
         }
+        if (brand) {
+          url += `brand=${brand}`
+        }
+
+        window.location.href = url
       })
     })
   </script>
