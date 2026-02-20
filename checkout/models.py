@@ -9,6 +9,10 @@ class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def total(self):
+        return sum(item.total_price for item in self.items.select_related("product").all())
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(
@@ -16,8 +20,12 @@ class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
+    @property
+    def total_price(self):
+        return self.product.price * self.quantity
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["cart", "product"], name="unique_product_per_cart")
+                fields=["cart", "product"], name="uq_checkout_cartitem_cart_product")
         ]
