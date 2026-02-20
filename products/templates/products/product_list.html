@@ -80,6 +80,31 @@
     document.addEventListener('DOMContentLoaded', () => {
       const dropdownHeader = document.querySelector('.dropdown-header')
       const dropdownList = document.querySelector('.dropdown-list')
+      const brandSelect = document.querySelector("select[name='brand']")
+      const brandEndpoint = "{% url 'products:brands_by_category' %}"
+      const initialCategory = "{{ category.slug|default_if_none:'' }}"
+      const initialBrand = "{{ brand.slug|default_if_none:'' }}"
+
+      const populateBrands = (categorySlug, selectedBrand) => {
+        brandSelect.disabled = true
+        brandSelect.innerHTML = '<option value="">All</option>'
+
+        const url = categorySlug ? `${brandEndpoint}?category=${categorySlug}` : brandEndpoint
+        fetch(url)
+          .then((res) => res.json())
+          .then((data) => {
+            data.forEach((b) => {
+              const opt = document.createElement('option')
+              opt.value = b.slug
+              opt.textContent = b.name
+              if (selectedBrand && selectedBrand === b.slug) opt.selected = true
+              brandSelect.appendChild(opt)
+            })
+          })
+          .finally(() => {
+            brandSelect.disabled = false
+          })
+      }
 
       dropdownHeader.addEventListener('click', () => {
         dropdownList.style.display = dropdownList.style.display === 'block' ? 'none' : 'block'
@@ -101,6 +126,8 @@
           this.classList.add('selected')
           if (nested) this.classList.add('parent')
           else this.classList.add('child')
+
+          populateBrands(this.dataset.slug, '')
         })
       })
 
@@ -119,6 +146,9 @@
 
         window.location.href = url
       })
+
+      // preload brand options based on current filters
+      populateBrands(initialCategory, initialBrand)
     })
   </script>
 {% endblock %}

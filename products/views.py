@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views import View
+from django.http import JsonResponse
 from .models import Category, Product, Brand
 
 
@@ -66,3 +67,17 @@ class ProductDetail(View):
         return render(request, 'products/product_detail.html', {
             'product': product
         })
+
+
+class BrandsByCategory(View):
+    def get(self, request):
+        category_slug = request.GET.get('category')
+        brands_qs = Brand.objects.all()
+
+        if category_slug:
+            category = get_object_or_404(Category, slug=category_slug)
+            descendants = category.get_descendants(include_self=True)
+            brands_qs = Brand.objects.filter(product__category__in=descendants).distinct()
+
+        data = list(brands_qs.values('name', 'slug'))
+        return JsonResponse(data, safe=False)
