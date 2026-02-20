@@ -4,19 +4,24 @@
 <h3>Your Cart</h3>
 <div class="table-responsive">
   <table class="table">
-    <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead>
+    <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead>
     <tbody>
       {% for item in items %}
       <tr>
         <td>{{ item.product.name }}</td>
         <td>${{ item.product.price }}</td>
-        <td>{{ item.quantity }}</td>
+        <td>
+          <div class="d-flex align-items-center gap-2">
+            <a href="{% url 'decrease-quantity' item.product.slug %}?next={% url 'cart-view' %}" class="btn btn-outline-danger btn-sm">-</a>
+            <span class="fw-semibold">{{ item.quantity }}</span>
+            <a href="{% url 'increase-quantity' item.product.slug %}?next={% url 'cart-view' %}" class="btn btn-danger btn-sm">+</a>
+          </div>
+        </td>
         <td>${{ item.total_price }}</td>
-        <td><span class="text-muted">Remove</span></td>
       </tr>
       {% empty %}
       <tr>
-        <td colspan="5" class="text-center text-muted">Your cart is empty.</td>
+        <td colspan="4" class="text-center text-muted">Your cart is empty.</td>
       </tr>
       {% endfor %}
     </tbody>

@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.views import View
 from django.http import JsonResponse
 from .models import Category, Product, Brand
+from checkout.models import CartItem
 
 
 class CategoryList(View):
@@ -63,9 +64,20 @@ class ProductList(View):
 class ProductDetail(View):
     def get(self, request, slug):
         product = get_object_or_404(Product, slug=slug)
+        cart_quantity = 0
+
+        if request.user.is_authenticated:
+            cart_quantity = (
+                CartItem.objects
+                .filter(cart__user=request.user, product=product)
+                .values_list("quantity", flat=True)
+                .first()
+                or 0
+            )
 
         return render(request, 'products/product_detail.html', {
-            'product': product
+            'product': product,
+            'cart_quantity': cart_quantity,
         })
 
 
